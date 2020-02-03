@@ -9,7 +9,7 @@ const Intern = require('./lib/intern');
 const Manager = require('./lib/manager');
 
 const writeFileAsync = util.promisify(fs.writeFile);
-const appenFileAsync = util.promisify(fs.appendFile);
+const appendFileAsync = util.promisify(fs.appendFile);
 const readFileAsync = util.promisify(fs.readFile);
 
 const employeeArray = [];
@@ -110,6 +110,59 @@ function getEngineerInfo() {
     ]);
 }
 
+//Returns an HTML header based on the employees role to append to the output file
+async function appendHTMLTemplate(employee) {
+    if (employee.getRole() === "Manager") {
+        var managerTemplate = await readFileAsync("./templates/manager.html", "utf8");
+
+        var mapObj = {
+            NAME: employee.getName(),
+            ID: employee.getId(),
+            EMAIL: employee.getEmail(),
+            ROLESPECIFIC: employee.getOfficeNumber()
+        };
+
+        managerTemplate = managerTemplate.replace(/NAME|ID|EMAIL|ROLESPECIFIC/g, function (matched) {
+            return mapObj[matched];
+        });
+
+        await appendFileAsync("./output/my-team.html", managerTemplate);
+    }
+    else if (employee.getRole() === "Intern") {
+        var internTemplate = await readFileAsync("./templates/intern.html", "utf8");
+
+        var mapObj = {
+            NAME: employee.getName(),
+            ID: employee.getId(),
+            EMAIL: employee.getEmail(),
+            ROLESPECIFIC: employee.getSchool()
+        };
+
+        internTemplate = internTemplate.replace(/NAME|ID|EMAIL|ROLESPECIFIC/g, function (matched) {
+            return mapObj[matched];
+        });
+
+        await appendFileAsync("./output/my-team.html", internTemplate);
+    }
+    else {
+        var engineerTemplate = await readFileAsync("./templates/engineer.html", "utf8");
+
+        var mapObj = {
+            NAME: employee.getName(),
+            ID: employee.getId(),
+            EMAIL: employee.getEmail(),
+            ROLESPECIFIC: employee.getGithub()
+        };
+
+        engineerTemplate = engineerTemplate.replace(/NAME|ID|EMAIL|ROLESPECIFIC/g, function (matched) {
+            return mapObj[matched];
+        });
+
+        await appendFileAsync("./output/my-team.html", engineerTemplate);
+    }
+}
+
+
 //Populates the employee array with team members after the manager data has been pushed
 async function createTeam() {
     var continueInLoop = true;
@@ -133,6 +186,7 @@ async function createTeam() {
     }
 }
 
+//Main application code
 async function init() {
     var managerData = await managerInfo();
     var newManager = new Manager(managerData.name, managerData.id, managerData.email, managerData.officeNumber);
@@ -143,8 +197,12 @@ async function init() {
 
     console.log(employeeArray)
 
+    var htmlHeader = await readFileAsync("./templates/main.html", "utf8")
+    await writeFileAsync("./output/my-team.html", htmlHeader);
 
-
+    employeeArray.forEach(employee => {
+        appendHTMLTemplate(employee);
+    });
 }
 
 init();
