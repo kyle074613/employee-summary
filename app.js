@@ -126,7 +126,7 @@ async function appendHTMLTemplate(employee) {
             return mapObj[matched];
         });
 
-        await appendFileAsync("./output/my-team.html", managerTemplate);
+        await appendFileAsync("./output/team.html", managerTemplate);
     }
     else if (employee.getRole() === "Intern") {
         var internTemplate = await readFileAsync("./templates/intern.html", "utf8");
@@ -142,7 +142,7 @@ async function appendHTMLTemplate(employee) {
             return mapObj[matched];
         });
 
-        await appendFileAsync("./output/my-team.html", internTemplate);
+        await appendFileAsync("./output/team.html", internTemplate);
     }
     else {
         var engineerTemplate = await readFileAsync("./templates/engineer.html", "utf8");
@@ -158,7 +158,7 @@ async function appendHTMLTemplate(employee) {
             return mapObj[matched];
         });
 
-        await appendFileAsync("./output/my-team.html", engineerTemplate);
+        await appendFileAsync("./output/team.html", engineerTemplate);
     }
 }
 
@@ -198,7 +198,7 @@ async function init() {
     console.log(employeeArray)
 
     var htmlHeader = await readFileAsync("./templates/main.html", "utf8")
-    await writeFileAsync("./output/my-team.html", htmlHeader);
+    await writeFileAsync("./output/team.html", htmlHeader);
 
     employeeArray.forEach(employee => {
         appendHTMLTemplate(employee);
