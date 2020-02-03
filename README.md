@@ -11,6 +11,7 @@ After downloading the files and installing the app dependencies (npm install), t
 
 * [Inquirer](https://www.npmjs.com/package/inquirer) - Used to create prompts in Node.
 * [Bootstrap](https://getbootstrap.com/) - Used as the web framework.
+* [Font Awesome](https://fontawesome.com/) - Used icons from the Font Awesome library.
 
 ## License
 
